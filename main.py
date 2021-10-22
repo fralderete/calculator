@@ -30,6 +30,10 @@ class SimpleCalculator:
         self.currentNumber = userInput
         self.printInput(self.currentNumber)
 
+    def strip(self, userInput):
+        userInput = userInput[1:]
+        self.userInput = userInput
+
     def printInput(self,userInput):
         print("The input character is: " + str(userInput))
 
@@ -73,30 +77,24 @@ class InitialState(SimpleCalculator):
     
     def __init__(self):
         SimpleCalculator.__init__(self)
+        # convert list to string
         character = self.userInput
+        character = ' '.join(str(e) for e in character)
 
-        for character in character:
-            if character[0].isdigit():
-                inputValue = int(character[0])
-
-                if inputValue in range(1,9):
-                    #self.printCurrentNumber(inputValue)
-                    #input collector stores character 0 as the currentNumber
-                    self.inputCollector(inputValue)
-                    self.setState(FirstInput())
-                    self.changeState()
-
-                else: 
-                    # go to error state and give an error code for initital state
-                    self.printInput(inputValue)
-                    self.setState(Error())
-                    self.changeStateError(errorTwo)
-                
-            else:
-                # go to error state and give an error code for initital state
-                self.printInput(character[0])
-                self.setState(Error())
-                self.changeStateError(errorOne)
+        if character[0].isdigit() and int(character[0]) in range(1,9):
+            inputValue = character[0]
+            # remove MSB from character
+            # input collector stores character 0 as the currentNumber
+            self.strip(character)
+            self.inputCollector(inputValue)
+            self.setState(FirstInput())
+            self.changeState()
+            
+        else:
+            # go to error state and give an error code for initital state
+            self.printInput(character[0])
+            self.setState(Error())
+            self.changeStateError(errorOne)
 
     
     def changeState(self):
