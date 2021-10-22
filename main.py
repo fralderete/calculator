@@ -20,10 +20,11 @@ def strip(userInput):
     return userInput
 
 def operation(operator, current, total):
-    print(operator)
     if operator == "+":
+        print("Adding: " + str(total) + "+" + str(current) )
         total = total + current
     elif operator == "-":
+        print("Subtracting: " + str(otal) + "-" + str(current) )
         total = total - current
 
     return total
@@ -61,6 +62,12 @@ class Error(SimpleCalculator):
         sys.exit()
 
 class EndOfFile(SimpleCalculator):
+    def __init__(self, newString,current,userInput,total,operator):
+        print("END OF FILE STATE")
+        total = operation(operator, int(current), total)
+        print("End of file reached. The final total is: " + str(total))
+        sys.exit()
+
     def changeState(self):
         pass
 
@@ -70,10 +77,13 @@ class SecondInput(SimpleCalculator):
         newString = newString[1:]
         userInput = newString[0]
         current = userInput
+        printInput(userInput)
+        printCurrentCharacter(current)
         
         if userInput.isdigit() and int(userInput) in range(1,9):
             printTotal(total)
             self.setState(FirstInput(newString,current,userInput,total,operator))
+
         else:
             self.setState(Error())
             self.changeStateError(errorThree)  
@@ -97,30 +107,38 @@ class DigitBuilding(SimpleCalculator):
 class FirstInput(SimpleCalculator):
     def __init__(self,newString, current, userInput,total,operator):
         print("FIRST INPUT STATE")
-        newString = newString[1:]
-        userInput = newString[0]
+        length = len(newString)
+        
+        #check for end of string then change states to EOF
+        if length == 1:
+            self.setState(EndOfFile(newString,current,userInput,total,operator))
 
-        if userInput.isdigit():
+        else:
+            print('here2')
+            newString = newString[1:]
+            userInput = newString[0]
             printInput(userInput)
             printCurrentCharacter(current)
-            self.setState(DigitBuilding(newString,current,userInput,total,operator))
 
-        elif userInput == "+":
-            total = operation(operator, int(current), total)
-            operator = userInput
-            printTotal(total)
-            self.setState(SecondInput(newString, current ,userInput,total,operator))
+            if userInput.isdigit():
+                self.setState(DigitBuilding(newString,current,userInput,total,operator))
 
-        elif userInput == "-":
-            total = operation(operator, int(current), total)
-            operator = userInput
-            printTotal(total)
-            self.setState(SecondInput(newString, current ,userInput,total,operator))
-            
-        else:
-            # go to error state and give an error code for initital state
-            self.setState(Error())
-            self.changeStateError(errorTwo)
+            elif userInput == "+":
+                total = operation(operator, int(current), total)
+                operator = userInput
+                printTotal(total)
+                self.setState(SecondInput(newString, current ,userInput,total,operator))
+
+            elif userInput == "-":
+                total = operation(operator, int(current), total)
+                operator = userInput
+                printTotal(total)
+                self.setState(SecondInput(newString, current ,userInput,total,operator))
+
+            else:
+                # go to error state and give an error code for initital state
+                self.setState(Error())
+                self.changeStateError(errorTwo)
 
 
     def changeState(self,inputValue):
