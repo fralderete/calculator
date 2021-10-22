@@ -7,9 +7,9 @@ errorOne = "First input character is not a digit, or is a zero."
 errorTwo = "Symbol not recognized. Looking for a + or - or a digit."
 
 def printInput(userInput):
-    print("The current character is: " + str(userInput))
-def printCurrentCharacter(userInput):
     print("The input character is: " + str(userInput))
+def printCurrentCharacter(userInput):
+    print("The current character is: " + str(userInput))
 def printTotal(userInput):
     print("The current total is: " + str(userInput))
 def strip(userInput):
@@ -53,7 +53,8 @@ class Error(SimpleCalculator):
         sys.exit()
 
 class SecondInput(SimpleCalculator):
-    def __init__(self,userInput):
+    def __init__(self,newString,current,userInput):
+        print("SECOND INPUT STATE")
         pass
 
     def changeState(self):
@@ -64,45 +65,37 @@ class EndOfFile(SimpleCalculator):
         pass
 
 class DigitBuilding(SimpleCalculator):
-    def __init__(self,newString,userInput):
-        character = newString
+    def __init__(self,newString,current,userInput):
         print("DIGIT BUILDING STATE")
+        printInput(userInput)
+        printCurrentCharacter(current)
+        current = str(current) + str(userInput)
+        print("Building digit... " + current)
+        self.setState(FirstInput(newString,current,userInput))
 
-        if character[0].isdigit():
-            printInput(userInput)
-            printCurrentCharacter(character[0])
-            userInput = str(userInput) + str(character[0])
-            strip(character)
-            print("Building digit... " + userInput)
-            self.setState(FirstInput(character,userInput))
-
-        else:
-            pass
         
     def changeState(self):
         pass
 
 class FirstInput(SimpleCalculator):
-    def __init__(self,newString, userInput):
-        character = newString
-        userInput = str(userInput)
+    def __init__(self,newString, current, userInput):
         print("FIRST INPUT STATE")
-        
-        if character[0].isdigit():
-            printInput(userInput)
-            printCurrentCharacter(character[0])
-            character = character[1:]
-            self.setState(DigitBuilding(character,userInput))
+        newString = newString[1:]
+        userInput = newString[0]
+        #int(userInput)
 
-        elif character[0] == "+" or character[0] == "-":
+        if userInput.isdigit():
             printInput(userInput)
-            printCurrentCharacter(character[0])
-            character = character[1:]
-            self.setState(SecondInput(character,userInput))
+            printCurrentCharacter(current)
+            self.setState(DigitBuilding(newString,current,userInput))
+
+        elif userInput == "+" or current == "-":
+            printInput(userInput)
+            printCurrentCharacter(current)
+            self.setState(SecondInput(newString, current ,userInput))
             
         else:
             # go to error state and give an error code for initital state
-            self.printInput(character[0])
             self.setState(Error())
             self.changeStateError(errorTwo)
 
@@ -115,21 +108,22 @@ class InitialState(SimpleCalculator):
     def __init__(self):
         SimpleCalculator.__init__(self)
         # convert list to string
-        character = dataFile.readlines()
-        character = ' '.join(str(e) for e in character)
+        newString = dataFile.readlines()
+        newString = ' '.join(str(e) for e in newString)
+        userInput = newString[0]
+        current = newString[0]
         print("INITIAL STATE")
 
-        if character[0].isdigit() and int(character[0]) in range(1,9):
-            userInput = character[0]
+        if userInput.isdigit() and int(userInput) in range(1,9):
             printInput(userInput)
-            printCurrentCharacter(character[0])
+            printCurrentCharacter(current)
             # remove MSB from the string were processing so that the next state has an updated string to work from
             # input collector stores character 0 as the currentNumber
-            self.setState(FirstInput(character, userInput))
+            self.setState(FirstInput(newString, current, userInput))
             
         else:
             # go to error state and give an error code for initital state
-            self.printInput(character[0])
+            self.printInput(newString[0])
             self.setState(Error())
             self.changeStateError(errorOne)
     
