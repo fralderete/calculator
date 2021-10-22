@@ -5,6 +5,8 @@ from abc import ABCMeta, abstractmethod
 dataFile = open('arithmetic.txt', 'r')
 errorOne = "First input character is not a digit, or is a zero."
 errorTwo = "Symbol not recognized. Looking for a + or - or a digit."
+errorThree = "Repeat symbols, or whitespace recognized."
+total = 0
 
 def printInput(userInput):
     print("The input character is: " + str(userInput))
@@ -12,9 +14,19 @@ def printCurrentCharacter(userInput):
     print("The current character is: " + str(userInput))
 def printTotal(userInput):
     print("The current total is: " + str(userInput))
+
 def strip(userInput):
     userInput = userInput[1:0]
     return userInput
+
+def operation(operator, current, total):
+    print(operator)
+    if operator == "+":
+        total = total + current
+    elif operator == "-":
+        total = total - current
+
+    return total
 
 class SimpleCalculator:
     @abstractmethod
@@ -34,10 +46,6 @@ class SimpleCalculator:
     def changeStateError(self,message):
         self.state = self.state.changeState(message)
 
-    def inputCollector(self,userInput):
-        self.currentNumber = userInput
-        self.printInput(self.currentNumber)
-
 class Error(SimpleCalculator):
 
     def changeState(self,message):
@@ -52,47 +60,62 @@ class Error(SimpleCalculator):
             print("ERROR: " + message + " Exiting program.")
         sys.exit()
 
-class SecondInput(SimpleCalculator):
-    def __init__(self,newString,current,userInput):
-        print("SECOND INPUT STATE")
-        pass
-
-    def changeState(self):
-        pass
-
 class EndOfFile(SimpleCalculator):
     def changeState(self):
         pass
 
+class SecondInput(SimpleCalculator):
+    def __init__(self,newString,current,userInput,total,operator):
+        print("SECOND INPUT STATE")
+        newString = newString[1:]
+        userInput = newString[0]
+        current = userInput
+        
+        if userInput.isdigit() and int(userInput) in range(1,9):
+            printTotal(total)
+            self.setState(FirstInput(newString,current,userInput,total,operator))
+        else:
+            self.setState(Error())
+            self.changeStateError(errorThree)  
+            
+
+    def changeState(self):
+        pass
+
 class DigitBuilding(SimpleCalculator):
-    def __init__(self,newString,current,userInput):
+    def __init__(self,newString,current,userInput,total,operator):
         print("DIGIT BUILDING STATE")
-        printInput(userInput)
-        printCurrentCharacter(current)
         current = str(current) + str(userInput)
+        printTotal(total)
         print("Building digit... " + current)
-        self.setState(FirstInput(newString,current,userInput))
+        self.setState(FirstInput(newString,current,userInput,total,operator))
 
         
     def changeState(self):
         pass
 
 class FirstInput(SimpleCalculator):
-    def __init__(self,newString, current, userInput):
+    def __init__(self,newString, current, userInput,total,operator):
         print("FIRST INPUT STATE")
         newString = newString[1:]
         userInput = newString[0]
-        #int(userInput)
 
         if userInput.isdigit():
             printInput(userInput)
             printCurrentCharacter(current)
-            self.setState(DigitBuilding(newString,current,userInput))
+            self.setState(DigitBuilding(newString,current,userInput,total,operator))
 
-        elif userInput == "+" or current == "-":
-            printInput(userInput)
-            printCurrentCharacter(current)
-            self.setState(SecondInput(newString, current ,userInput))
+        elif userInput == "+":
+            total = operation(operator, int(current), total)
+            operator = userInput
+            printTotal(total)
+            self.setState(SecondInput(newString, current ,userInput,total,operator))
+
+        elif userInput == "-":
+            total = operation(operator, int(current), total)
+            operator = userInput
+            printTotal(total)
+            self.setState(SecondInput(newString, current ,userInput,total,operator))
             
         else:
             # go to error state and give an error code for initital state
@@ -112,6 +135,8 @@ class InitialState(SimpleCalculator):
         newString = ' '.join(str(e) for e in newString)
         userInput = newString[0]
         current = newString[0]
+        operator = "+"
+
         print("INITIAL STATE")
 
         if userInput.isdigit() and int(userInput) in range(1,9):
@@ -119,7 +144,7 @@ class InitialState(SimpleCalculator):
             printCurrentCharacter(current)
             # remove MSB from the string were processing so that the next state has an updated string to work from
             # input collector stores character 0 as the currentNumber
-            self.setState(FirstInput(newString, current, userInput))
+            self.setState(FirstInput(newString, current, userInput,total,operator))
             
         else:
             # go to error state and give an error code for initital state
