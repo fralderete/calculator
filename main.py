@@ -2,20 +2,8 @@
 import sys
 from abc import ABCMeta, abstractmethod
 
-inputValue = ""
-polarity = 1
-total = 0
-""" Calculator = SimpleCalculator()
-Initiate = InitialState()
-FirstInputState = FirstInput()
-ErrorState = Error() """
 errorOne = "First input character is not a digit."
 errorTwo = "First input digit is not 1-9."
-
-class InternalState(metaclass = ABCMeta):
-    @abstractmethod
-    def changeState(self):
-        pass
 
 class SimpleCalculator:
     @abstractmethod
