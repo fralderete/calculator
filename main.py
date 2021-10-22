@@ -61,12 +61,12 @@ class Error(SimpleCalculator):
 
     def exit(self,status=0, message=None):
         if message:
-            print("ERROR: " + message + " Check you input file, exiting program.")
+            print("\nERROR: " + message + " Check you input file, exiting program.")
         sys.exit()
 
 class EndOfFile(SimpleCalculator):
     def __init__(self, newString,current,userInput,total,operator):
-        print("END OF FILE STATE")
+        print("\nEND OF FILE STATE")
         total = operation(operator, int(current), total)
         print("End of file reached. The final total is: " + str(total))
         sys.exit()
@@ -76,15 +76,15 @@ class EndOfFile(SimpleCalculator):
 
 class SecondInput(SimpleCalculator):
     def __init__(self,newString,current,userInput,total,operator):
-        print("SECOND INPUT STATE")
+        print("\nSECOND INPUT STATE")
         newString = newString[1:]
         userInput = newString[0]
         current = userInput
         printInput(userInput)
         printCurrentCharacter(current)
+        printTotal(total)
         
         if userInput.isdigit() and int(userInput) in range(1,9):
-            printTotal(total)
             self.setState(FirstInput(newString,current,userInput,total,operator))
 
         else:
@@ -97,9 +97,8 @@ class SecondInput(SimpleCalculator):
 
 class DigitBuilding(SimpleCalculator):
     def __init__(self,newString,current,userInput,total,operator):
-        print("DIGIT BUILDING STATE")
+        print("\nDIGIT BUILDING STATE")
         current = str(current) + str(userInput)
-        printTotal(total)
         print("Building digit... " + current)
         self.setState(FirstInput(newString,current,userInput,total,operator))
 
@@ -109,7 +108,7 @@ class DigitBuilding(SimpleCalculator):
 
 class FirstInput(SimpleCalculator):
     def __init__(self,newString, current, userInput,total,operator):
-        print("FIRST INPUT STATE")
+        print("\nFIRST INPUT STATE")
         length = len(newString)
         
         #check for end of string then change states to EOF
@@ -121,6 +120,7 @@ class FirstInput(SimpleCalculator):
             userInput = newString[0]
             printInput(userInput)
             printCurrentCharacter(current)
+            printTotal(total)
 
             if userInput.isdigit():
                 self.setState(DigitBuilding(newString,current,userInput,total,operator))
@@ -128,13 +128,11 @@ class FirstInput(SimpleCalculator):
             elif userInput == "+":
                 total = operation(operator, int(current), total)
                 operator = userInput
-                printTotal(total)
                 self.setState(SecondInput(newString, current ,userInput,total,operator))
 
             elif userInput == "-":
                 total = operation(operator, int(current), total)
                 operator = userInput
-                printTotal(total)
                 self.setState(SecondInput(newString, current ,userInput,total,operator))
 
             else:
@@ -157,7 +155,7 @@ class InitialState(SimpleCalculator):
         current = newString[0]
         operator = "+"
 
-        print("INITIAL STATE")
+        print("\nINITIAL STATE")
 
         if userInput.isdigit() and int(userInput) in range(1,9):
             printInput(userInput)
