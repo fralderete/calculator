@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 dataFile = open('arithmetic.txt', 'r')
 errorOne = "First input character is not a digit, or is a zero."
 errorTwo = "Symbol not recognized. Looking for a + or - or a digit."
-errorThree = "Repeat symbols, or whitespace recognized."
+errorThree = "Repeat symbols, leading zero, or whitespace recognized after a + or -."
 total = 0
 
 def printInput(userInput):
@@ -24,7 +24,7 @@ def operation(operator, current, total):
         print("Adding: " + str(total) + "+" + str(current) )
         total = total + current
     elif operator == "-":
-        print("Subtracting: " + str(otal) + "-" + str(current) )
+        print("Subtracting: " + str(total) + "-" + str(current) )
         total = total - current
 
     return total
@@ -56,9 +56,12 @@ class Error(SimpleCalculator):
         elif message == errorTwo:
             self.exit(0,errorTwo)
 
+        elif message == errorThree:
+            self.exit(0,errorThree)
+
     def exit(self,status=0, message=None):
         if message:
-            print("ERROR: " + message + " Exiting program.")
+            print("ERROR: " + message + " Check you input file, exiting program.")
         sys.exit()
 
 class EndOfFile(SimpleCalculator):
@@ -114,7 +117,6 @@ class FirstInput(SimpleCalculator):
             self.setState(EndOfFile(newString,current,userInput,total,operator))
 
         else:
-            print('here2')
             newString = newString[1:]
             userInput = newString[0]
             printInput(userInput)
