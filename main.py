@@ -27,17 +27,8 @@ class SimpleCalculator:
         self.state = self.state.changeState(message)
 
     def inputCollector(self,userInput):
-
-        if userInput in range(1,9):
-            self.currentNumber = userInput
-            self.printCurrentNumber(self.currentNumber)
-            
-        else:
-            # go to error state and give an error code for initital state
-            #self.printInput()
-            self.setState(Error())
-            self.changeStateError(errorTwo)
-
+        self.currentNumber = userInput
+        self.printInput(self.currentNumber)
 
     def printInput(self,userInput):
         print("The input character is: " + str(userInput))
@@ -87,11 +78,19 @@ class InitialState(SimpleCalculator):
         for character in character:
             if character[0].isdigit():
                 inputValue = int(character[0])
-                self.printInput(inputValue)
-                #input collector stores character 0 as the currentNumber
-                self.inputCollector(inputValue)
-                self.setState(FirstInput())
-                self.changeState()
+
+                if inputValue in range(1,9):
+                    #self.printCurrentNumber(inputValue)
+                    #input collector stores character 0 as the currentNumber
+                    self.inputCollector(inputValue)
+                    self.setState(FirstInput())
+                    self.changeState()
+
+                else: 
+                    # go to error state and give an error code for initital state
+                    self.printInput(inputValue)
+                    self.setState(Error())
+                    self.changeStateError(errorTwo)
                 
             else:
                 # go to error state and give an error code for initital state
