@@ -15,27 +15,6 @@ errorTwo = "Symbol not recognized. Looking for a + or - or a digit."
 errorThree = "Repeat symbols, leading zero, or whitespace recognized after a + or -."
 total = 0
 
-def printInput(userInput):
-    print("The input character is: " + str(userInput))
-def printCurrentCharacter(userInput):
-    print("The current character is: " + str(userInput))
-def printTotal(userInput):
-    print("The current total is: " + str(userInput))
-
-def strip(userInput):
-    userInput = userInput[1:0]
-    return userInput
-
-def operation(operator, current, total):
-    if operator == "+":
-        print("Adding: " + str(total) + "+" + str(current) )
-        total = total + current
-    elif operator == "-":
-        print("Subtracting: " + str(total) + "-" + str(current) )
-        total = total - current
-
-    return total
-
 # super class that everyone inherits
 class SimpleCalculator:
     @abstractmethod
@@ -55,6 +34,26 @@ class SimpleCalculator:
     def changeStateError(self,message):
         self.state = self.state.changeState(message)
 
+    def printInput(self,userInput):
+        print("The input character is: " + str(userInput))
+    
+    def printCurrentCharacter(self,userInput):
+        print("The current character is: " + str(userInput))
+    
+    def printTotal(self,userInput):
+        print("The current total is: " + str(userInput))
+
+    
+    def operation(self,operator, current, total):
+        if operator == "+":
+            print("Adding: " + str(total) + "+" + str(current) )
+            total = total + current
+        elif operator == "-":
+            print("Subtracting: " + str(total) + "-" + str(current) )
+            total = total - current
+
+        return total 
+
 # error handling and exit
 class Error(SimpleCalculator):
 
@@ -72,7 +71,7 @@ class Error(SimpleCalculator):
 class EndOfFile(SimpleCalculator):
     def __init__(self, newString,current,userInput,total,operator):
         print("\nEND OF FILE STATE")
-        total = operation(operator, int(current), total)
+        total = self.operation(operator, int(current), total)
         print("End of file reached. The final total is: " + str(total))
         sys.exit()
 
@@ -90,9 +89,9 @@ class SecondInput(SimpleCalculator):
         newString = newString[1:]
         userInput = newString[0]
         current = userInput
-        printInput(userInput)
-        printCurrentCharacter(current)
-        printTotal(total)
+        self.printInput(userInput)
+        self.printCurrentCharacter(current)
+        self.printTotal(total)
         
         if userInput.isdigit() and int(userInput) in range(1,10):
             self.setState(FirstInput(newString,current,userInput,total,operator))
@@ -132,20 +131,20 @@ class FirstInput(SimpleCalculator):
             # string has leading character removed every iteration
             newString = newString[1:]
             userInput = newString[0]
-            printInput(userInput)
-            printCurrentCharacter(current)
-            printTotal(total)
+            self.printInput(userInput)
+            self.printCurrentCharacter(current)
+            self.printTotal(total)
 
             if userInput.isdigit():
                 self.setState(DigitBuilding(newString,current,userInput,total,operator))
 
             elif userInput == "+":
-                total = operation(operator, int(current), total)
+                total = self.operation(operator, int(current), total)
                 operator = userInput
                 self.setState(SecondInput(newString, current ,userInput,total,operator))
 
             elif userInput == "-":
-                total = operation(operator, int(current), total)
+                total = self.operation(operator, int(current), total)
                 operator = userInput
                 self.setState(SecondInput(newString, current ,userInput,total,operator))
 
@@ -179,8 +178,8 @@ class InitialState(SimpleCalculator):
         print("\nINITIAL STATE")
 
         if userInput.isdigit() and int(userInput) in range(1,10):
-            printInput(userInput)
-            printCurrentCharacter(current)
+            self.printInput(userInput)
+            self.printCurrentCharacter(current)
             self.setState(FirstInput(newString, current, userInput,total,operator))
             
         else:
