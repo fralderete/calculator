@@ -94,7 +94,7 @@ class SecondInput(SimpleCalculator):
         printCurrentCharacter(current)
         printTotal(total)
         
-        if userInput.isdigit() and int(userInput) in range(1,9):
+        if userInput.isdigit() and int(userInput) in range(1,10):
             self.setState(FirstInput(newString,current,userInput,total,operator))
 
         else:
