@@ -148,14 +148,13 @@ class InitialState(SimpleCalculator):
         userInput = newString[0]
         current = newString[0]
         operator = "+"
+        print(userInput)
 
         print("\nINITIAL STATE")
 
-        if userInput.isdigit() and int(userInput) in range(1,9):
+        if userInput.isdigit() and int(userInput) in range(1,10):
             printInput(userInput)
             printCurrentCharacter(current)
-            # remove MSB from the string were processing so that the next state has an updated string to work from
-            # input collector stores character 0 as the currentNumber
             self.setState(FirstInput(newString, current, userInput,total,operator))
             
         else:
