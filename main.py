@@ -143,12 +143,9 @@ class FirstInput(SimpleCalculator):
             if userInput.isdigit():
                 self.setState(DigitBuilding(newString,current,userInput,total,operator))
 
-            elif userInput == "+":
-                total = self.operation(operator, int(current), total)
-                operator = userInput
-                self.setState(SecondInput(newString, current ,userInput,total,operator))
-
-            elif userInput == "-":
+            # calculate total before changing math operator 
+            # program "remembers" last input math operator
+            elif userInput == "+" or userInput == "-":
                 total = self.operation(operator, int(current), total)
                 operator = userInput
                 self.setState(SecondInput(newString, current ,userInput,total,operator))
