@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+#
+#
+#   Simple calculator to show a state design pattern, can only add or subtract
+#   By: Francisco E. Alderete, Richard Padilla, Karl Dill, Venkata Surya Dasari
+#
+#
+
 import sys
 from abc import ABCMeta, abstractmethod
 
@@ -142,11 +149,15 @@ class InitialState(SimpleCalculator):
     
     def __init__(self):
         SimpleCalculator.__init__(self)
-        # convert list to string
+        # store the input file
         newString = dataFile.readlines()
+        # remove the list and convert to string
         newString = ' '.join(str(e) for e in newString)
+        # remove all whitespace (not a feature we made in diagram)
+        # "".join(newString.split())
+
         userInput = newString[0]
-        current = newString[0]
+        current = userInput
         operator = "+"
         print(userInput)
 
