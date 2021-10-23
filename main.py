@@ -50,14 +50,8 @@ class SimpleCalculator:
 class Error(SimpleCalculator):
 
     def changeState(self,message):
-        if message == errorOne:
-            self.exit(0,errorOne)
-
-        elif message == errorTwo:
-            self.exit(0,errorTwo)
-
-        elif message == errorThree:
-            self.exit(0,errorThree)
+        if message:
+            self.exit(0,message)
 
     def exit(self,status=0, message=None):
         if message:
@@ -166,7 +160,6 @@ class InitialState(SimpleCalculator):
             
         else:
             # go to error state and give an error code for initital state
-            self.printInput(newString[0])
             self.setState(Error())
             self.changeStateError(errorOne)
     
