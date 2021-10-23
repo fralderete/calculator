@@ -59,9 +59,9 @@ class Error(SimpleCalculator):
 
     def changeState(self,message):
         if message:
-            self.exit(0,message)
+            self.exit(message)
 
-    def exit(self,status=0, message=None):
+    def exit(self, message=None):
         if message:
             print("\nERROR: " + message + " Check your input file, exiting program.")
         sys.exit()
@@ -69,7 +69,7 @@ class Error(SimpleCalculator):
 # performs the final operation without decrementing the string so we don't
 # hit an error, then exits the program
 class EndOfFile(SimpleCalculator):
-    def __init__(self, newString,current,userInput,total,operator):
+    def __init__(self, current, total,operator):
         print("\nEND OF FILE STATE")
         total = self.operation(operator, int(current), total)
         print("End of file reached. The final total is: " + str(total))
@@ -108,8 +108,12 @@ class SecondInput(SimpleCalculator):
 class DigitBuilding(SimpleCalculator):
     def __init__(self,newString,current,userInput,total,operator):
         print("\nDIGIT BUILDING STATE")
-        current = str(current) + str(userInput)
-        print("Building digit... " + current)
+        current = int(current)
+        userInput = int(userInput)
+
+        # digit building equation
+        current = current*10 + userInput
+        print("Building digit... " + str(current))
         self.setState(FirstInput(newString,current,userInput,total,operator))
 
         
@@ -125,7 +129,7 @@ class FirstInput(SimpleCalculator):
         
         #check for end of string then change states to EOF
         if length == 1:
-            self.setState(EndOfFile(newString,current,userInput,total,operator))
+            self.setState(EndOfFile(current,total,operator))
 
         # if not EOF continue processing string
         else:
@@ -191,6 +195,6 @@ class InitialState(SimpleCalculator):
     def changeState(self):
         pass
 
+# initializer
 if __name__ == "__main__":
     InitialState()
-    
