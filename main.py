@@ -15,7 +15,7 @@ errorTwo = "Symbol not recognized. Looking for a + or - or a digit."
 errorThree = "Repeat symbols, leading zero, or whitespace recognized after a + or -."
 total = 0
 
-# super class that everyone inherits
+# super class that everyone inherits, contains common methods
 class SimpleCalculator:
     @abstractmethod
     def __init__(self):
@@ -63,7 +63,7 @@ class Error(SimpleCalculator):
 
     def exit(self,status=0, message=None):
         if message:
-            print("\nERROR: " + message + " Check you input file, exiting program.")
+            print("\nERROR: " + message + " Check your input file, exiting program.")
         sys.exit()
 
 # performs the final operation without decrementing the string so we don't
@@ -127,6 +127,7 @@ class FirstInput(SimpleCalculator):
         if length == 1:
             self.setState(EndOfFile(newString,current,userInput,total,operator))
 
+        # if not EOF continue processing string
         else:
             # string has leading character removed every iteration
             newString = newString[1:]
@@ -173,10 +174,10 @@ class InitialState(SimpleCalculator):
         userInput = newString[0]
         current = userInput
         operator = "+"
-        print(userInput)
 
         print("\nINITIAL STATE")
 
+        # go to first state if digit 1-9
         if userInput.isdigit() and int(userInput) in range(1,10):
             self.printInput(userInput)
             self.printCurrentCharacter(current)
