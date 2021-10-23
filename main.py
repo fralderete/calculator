@@ -36,6 +36,7 @@ def operation(operator, current, total):
 
     return total
 
+# super class that everyone inherits
 class SimpleCalculator:
     @abstractmethod
     def __init__(self):
@@ -54,6 +55,7 @@ class SimpleCalculator:
     def changeStateError(self,message):
         self.state = self.state.changeState(message)
 
+# error handling and exit
 class Error(SimpleCalculator):
 
     def changeState(self,message):
@@ -65,6 +67,8 @@ class Error(SimpleCalculator):
             print("\nERROR: " + message + " Check you input file, exiting program.")
         sys.exit()
 
+# performs the final operation without decrementing the string so we don't
+# hit an error, then exits the program
 class EndOfFile(SimpleCalculator):
     def __init__(self, newString,current,userInput,total,operator):
         print("\nEND OF FILE STATE")
@@ -75,9 +79,14 @@ class EndOfFile(SimpleCalculator):
     def changeState(self):
         pass
 
+# this class is necessary to have a digit 1-9 check after
+# an operator since we can have no leading zeroes
+# also resets the current variable between math symbols
 class SecondInput(SimpleCalculator):
     def __init__(self,newString,current,userInput,total,operator):
         print("\nSECOND INPUT STATE")
+
+        # strings MSB is removed 
         newString = newString[1:]
         userInput = newString[0]
         current = userInput
@@ -96,6 +105,7 @@ class SecondInput(SimpleCalculator):
     def changeState(self):
         pass
 
+# since we are going character by character this class builds numbers up between operators
 class DigitBuilding(SimpleCalculator):
     def __init__(self,newString,current,userInput,total,operator):
         print("\nDIGIT BUILDING STATE")
@@ -107,6 +117,8 @@ class DigitBuilding(SimpleCalculator):
     def changeState(self):
         pass
 
+# the main input processor, also checks for end of file
+# handles the adding and subtracting
 class FirstInput(SimpleCalculator):
     def __init__(self,newString, current, userInput,total,operator):
         print("\nFIRST INPUT STATE")
@@ -117,6 +129,7 @@ class FirstInput(SimpleCalculator):
             self.setState(EndOfFile(newString,current,userInput,total,operator))
 
         else:
+            # string has leading character removed every iteration
             newString = newString[1:]
             userInput = newString[0]
             printInput(userInput)
@@ -145,6 +158,8 @@ class FirstInput(SimpleCalculator):
     def changeState(self,inputValue):
         pass
 
+# program always begins here, and check for the first digit in the file
+# if it's not a digit 1-9 it errors out
 class InitialState(SimpleCalculator):
     
     def __init__(self):
