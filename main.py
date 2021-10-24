@@ -42,7 +42,6 @@ class SimpleCalculator:
     
     def printTotal(self,userInput):
         print("The current total is: " + str(userInput))
-
     
     def operation(self,operator, current, total):
         if operator == "+":

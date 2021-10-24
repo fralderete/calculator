@@ -1,0 +1,5 @@
+The main.py and the arithemtic.txt file should be in the same directory to run properly. 
+
+Run the following command once in the directory:
+
+python3 main.py
